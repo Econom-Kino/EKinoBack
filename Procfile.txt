@@ -1,0 +1,1 @@
+web: gunicorn EKino.wsgi --log-file -
