@@ -30,7 +30,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 SECRET_KEY = os.environ.get('SECRET_KEY')
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'ekinoback.herokuapp.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
