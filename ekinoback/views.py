@@ -7,6 +7,10 @@ from .serializers import CinemaSerializer, MovieSerializer, SessionSerializer, \
     GenreSerializer, CinemaImageSerializer, ActorSerializer, StudioSerializer
 from .models import Cinema, Movie, Session, Genre, CinemaImage, Actor, Studio
 
+#---------------------------------------------------------------------------------
+# General
+#---------------------------------------------------------------------------------
+
 def general_get_post(request, class_name, serializer_name):
     if request.method == 'GET' :
         obj = class_name.objects.all()
@@ -125,6 +129,16 @@ def get_post_cinemaImage(request) :
 def get_update_delete_cinemaImage(request, pk) :
     return general_get_put_delete(request, pk, CinemaImage, CinemaImageSerializer)
 
+@api_view(['GET'])
+def getImageByCinema(request, pk)
+    try:
+        obj = CinemaImage.objects.get(cinema=pk)
+        print(obj)
+    except CinemaImage.DoesNotExist:
+        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET' :
+        return Response(CinemaSerializer(obj, many=True).data) 
 #---------------------------------------------------------------------------------
 # Actors
 #---------------------------------------------------------------------------------
