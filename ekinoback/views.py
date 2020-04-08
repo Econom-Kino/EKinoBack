@@ -121,7 +121,7 @@ def get_update_delete_session(request, pk) :
 @api_view(['GET'])
 def getSessionByMovie(request, pk) :
     objs = Session.objects.filter(movie=pk)
-    return Response(SessionSerializer(obj, many=True).data) 
+    return Response(SessionSerializer(objs, many=True).data) 
 
 @api_view(['GET'])
 def getSessionByCinema(request, place_id) :
