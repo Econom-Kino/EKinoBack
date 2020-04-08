@@ -138,7 +138,7 @@ def getImageByCinema(request, pk) :
         return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET' :
-        return Response(CinemaSerializer(obj, many=True).data) 
+        return Response(CinemaImageSerializer(obj, many=True).data) 
 #---------------------------------------------------------------------------------
 # Actors
 #---------------------------------------------------------------------------------
