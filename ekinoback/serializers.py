@@ -41,7 +41,7 @@ class MovieSerializer(serializers.ModelSerializer) :
 class SessionSerializer(serializers.ModelSerializer) :
     # cinema_name = CinemaSerializer(read_only=True, source='cinema')
     # movie_name = MovieSerializer(read_only=True, source='movie')
-    cinema = serializers.SlugRelatedField(queryset = Cinema.objects.all(), slug_field = 'name')
+    cinema = serializers.SlugRelatedField(queryset = Cinema.objects.all(), slug_field = 'place_id')
     movie = serializers.SlugRelatedField(write_only = True, queryset = Movie.objects.all(), slug_field = 'name')
 
     class Meta:
@@ -50,6 +50,7 @@ class SessionSerializer(serializers.ModelSerializer) :
         depth = 1
 
 class CinemaImageSerializer(serializers.ModelSerializer) :
+    cinema = serializers.SlugRelatedField(queryset = Cinema.objects.all(), slug_field = 'place_id')
 
     class Meta:
         model = CinemaImage
