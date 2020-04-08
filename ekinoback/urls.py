@@ -4,7 +4,7 @@ from .views import get_post_movies, get_update_delete_movie, get_post_cinema, \
          get_post_session, get_post_cinemaImage, get_update_delete_session, \
              get_update_delete_cinemaImage, get_post_session, get_post_actor, \
                  get_post_studio, get_update_delete_actor, get_update_delete_studio, \
-                     getImageByCinema
+                     getImageByCinema, getSessionByCinema, getSessionByMovie
 
 urlpatterns = [
     path('movies/', get_post_movies),
@@ -14,8 +14,8 @@ urlpatterns = [
     path('genres/', get_post_genre),
     path('genres/id/<int:pk>/', get_update_delete_genre), 
     path('sessions/', get_post_session),
-    # path('sessions/movie/<int:pk>/', getSessionByMovie),
-    # path('sessions/cinema/<str:place_id>/', getSessionByCinema),    
+    path('sessions/movie/<int:pk>/', getSessionByMovie),
+    path('sessions/cinema/<str:place_id>/', getSessionByCinema),    
     path('sessions/id/<int:pk>/', get_update_delete_session),
     path('cinema-images/', get_post_cinemaImage),
     path('cinema-images/cinema/<str:place_id>/', getImageByCinema),
