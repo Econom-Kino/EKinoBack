@@ -130,7 +130,7 @@ def get_update_delete_cinemaImage(request, pk) :
     return general_get_put_delete(request, pk, CinemaImage, CinemaImageSerializer)
 
 @api_view(['GET'])
-def getImageByCinema(request, pk)
+def getImageByCinema(request, pk) :
     try:
         obj = CinemaImage.objects.get(cinema=pk)
         print(obj)
