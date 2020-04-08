@@ -118,6 +118,16 @@ def get_post_session(request) :
 def get_update_delete_session(request, pk) :
     return general_get_put_delete(request, pk, Session, SessionSerializer)
 
+@api_view(['GET'])
+def getSessionByMovie(request, pk) :
+    obj = Session.objects.filter(movie=pk)
+    return Response(CinemaImageSerializer(obj, many=True).data) 
+
+@api_view(['GET'])
+def getSessionByCinema(request, pk) :
+    obj = CinemaImage.objects.filter(cinema=pk)
+    return Response(CinemaImageSerializer(obj, many=True).data) 
+
 #---------------------------------------------------------------------------------
 # Cinema Images
 #---------------------------------------------------------------------------------
@@ -130,15 +140,14 @@ def get_update_delete_cinemaImage(request, pk) :
     return general_get_put_delete(request, pk, CinemaImage, CinemaImageSerializer)
 
 @api_view(['GET'])
-def getImageByCinema(request, pk) :
+def getImageByCinema(request, place_id) :
     try:
-        obj = CinemaImage.objects.filter(cinema=pk)
-        print(obj)
-    except CinemaImage.DoesNotExist:
+        cinema = Cinema.objects.get(place_id=place_id)
+    except Cinema.DoesNotExist:
         return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == 'GET' :
-        return Response(CinemaImageSerializer(obj, many=True).data) 
+    objs = CinemaImage.objects.filter(cinema=cinema.pk)
+    return Response(CinemaImageSerializer(objs, many=True).data) 
 #---------------------------------------------------------------------------------
 # Actors
 #---------------------------------------------------------------------------------
