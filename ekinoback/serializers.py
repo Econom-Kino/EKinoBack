@@ -47,6 +47,7 @@ class SessionSerializer(serializers.ModelSerializer) :
     class Meta:
         model = Session
         fields = '__all__'
+        depth = 1
 
 class CinemaImageSerializer(serializers.ModelSerializer) :
 
