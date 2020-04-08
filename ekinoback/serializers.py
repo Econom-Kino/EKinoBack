@@ -42,7 +42,7 @@ class SessionSerializer(serializers.ModelSerializer) :
     # cinema_name = CinemaSerializer(read_only=True, source='cinema')
     # movie_name = MovieSerializer(read_only=True, source='movie')
     cinema = serializers.SlugRelatedField(queryset = Cinema.objects.all(), slug_field = 'place_id')
-    movie = serializers.SlugRelatedField(write_only = True, queryset = Movie.objects.all(), slug_field = 'name')
+    movie = serializers.SlugRelatedField(queryset = Movie.objects.all(), slug_field = 'pk')
 
     class Meta:
         model = Session
