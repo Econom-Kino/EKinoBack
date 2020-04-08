@@ -120,8 +120,8 @@ def get_update_delete_session(request, pk) :
 
 @api_view(['GET'])
 def getSessionByMovie(request, pk) :
-    obj = Session.objects.filter(movie=pk)
-    return Response(CinemaImageSerializer(obj, many=True).data) 
+    objs = Session.objects.filter(movie=pk)
+    return Response(SessionSerializer(obj, many=True).data) 
 
 @api_view(['GET'])
 def getSessionByCinema(request, place_id) :
@@ -130,8 +130,8 @@ def getSessionByCinema(request, place_id) :
     except Cinema.DoesNotExist:
         return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
-    objs = CinemaImage.objects.filter(cinema=cinema.pk)
-    return Response(CinemaImageSerializer(objs, many=True).data) 
+    objs = Session.objects.filter(cinema=cinema.pk)
+    return Response(SessionSerializer(objs, many=True).data) 
 
 #---------------------------------------------------------------------------------
 # Cinema Images
