@@ -132,7 +132,7 @@ def get_update_delete_cinemaImage(request, pk) :
 @api_view(['GET'])
 def getImageByCinema(request, pk) :
     try:
-        obj = CinemaImage.objects.get(cinema=pk)
+        obj = CinemaImage.objects.filter(cinema=pk)
         print(obj)
     except CinemaImage.DoesNotExist:
         return HttpResponse(status=status.HTTP_404_NOT_FOUND)
