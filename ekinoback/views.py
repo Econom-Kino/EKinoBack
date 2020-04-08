@@ -118,15 +118,15 @@ def get_post_session(request) :
 def get_update_delete_session(request, pk) :
     return general_get_put_delete(request, pk, Session, SessionSerializer)
 
-@api_view(['GET'])
-def getSessionByMovie(request, pk) :
-    obj = Session.objects.filter(movie=pk)
-    return Response(CinemaImageSerializer(obj, many=True).data) 
+# @api_view(['GET'])
+# def getSessionByMovie(request, pk) :
+#     obj = Session.objects.filter(movie=pk)
+#     return Response(CinemaImageSerializer(obj, many=True).data) 
 
-@api_view(['GET'])
-def getSessionByCinema(request, pk) :
-    obj = CinemaImage.objects.filter(cinema=pk)
-    return Response(CinemaImageSerializer(obj, many=True).data) 
+# @api_view(['GET'])
+# def getSessionByCinema(request, pk) :
+#     obj = CinemaImage.objects.filter(cinema=pk)
+#     return Response(CinemaImageSerializer(obj, many=True).data) 
 
 #---------------------------------------------------------------------------------
 # Cinema Images
