@@ -81,7 +81,7 @@ def getCinemaItem(request, place_id) :
     try:
         obj = Cinema.objects.get(place_id=place_id)
     except Cinema.DoesNotExist:
-        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
 
     if request.method == 'GET' :
         return Response(CinemaSerializer(obj).data)
