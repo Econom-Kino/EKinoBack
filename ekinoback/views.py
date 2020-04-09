@@ -46,24 +46,40 @@ def general_get_put_delete(request, attr, class_name, serializer_name) :
 # Movies
 #---------------------------------------------------------------------------------
 @api_view(['GET', 'POST'])
-def get_post_movies(request) :
+def getMoviesList(request) :
     return general_get_post(request, Movie, MovieSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def get_update_delete_movie(request, pk) :
+def getMovieItem(request, pk) :
     return general_get_put_delete(request, pk, Movie, MovieSerializer)
 
+@api_view(['GET'])
+def getMoviesByCinema(request, place_id):
+    try:
+        obj = Cinema.objects.get(place_id=key)
+    except Cinema.DoesNotExist:
+        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+    
+    sessions = Session.objects.filter(cinema=cinema.pk)
+    movies = set()
+    for session in sessions:
+        movies.add(session.movie)
+    objs = []
+    for movie in movies:
+        objs.append(Movie.objects.add(pk=movie))
+    return Response(MovieSerializer(objs, many=True).data)
+    
 #---------------------------------------------------------------------------------
 # Cinemas
 #---------------------------------------------------------------------------------
 @api_view(['GET', 'POST'])
-def get_post_cinema(request) :
+def getCinemaList(request) :
     return general_get_post(request, Cinema, CinemaSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def get_update_delete_cinema(request, key) :
+def getCinemaItem(request, place_id) :
     try:
-        obj = Cinema.objects.get(place_id=key)
+        obj = Cinema.objects.get(place_id=place_id)
     except Cinema.DoesNotExist:
         return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
@@ -84,11 +100,11 @@ def get_update_delete_cinema(request, key) :
 # Genres
 #---------------------------------------------------------------------------------
 @api_view(['GET', 'POST'])
-def get_post_genre(request) :
+def getGenreList(request) :
     return general_get_post(request, Genre, GenreSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def get_update_delete_genre(request, pk) :
+def getGenreItem(request, pk) :
     try:
         obj = Genre.objects.get(pseudo_id=pk)
     except Genre.DoesNotExist:
@@ -111,20 +127,20 @@ def get_update_delete_genre(request, pk) :
 # Sessions
 #---------------------------------------------------------------------------------
 @api_view(['GET', 'POST'])
-def get_post_session(request) :
+def getSessionList(request) :
     return general_get_post(request, Session, SessionSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def get_update_delete_session(request, pk) :
+def getSessionItem(request, pk) :
     return general_get_put_delete(request, pk, Session, SessionSerializer)
 
 @api_view(['GET'])
-def getSessionByMovie(request, pk) :
+def getSessionsByMovie(request, pk) :
     objs = Session.objects.filter(movie=pk)
     return Response(SessionSerializer(objs, many=True).data) 
 
 @api_view(['GET'])
-def getSessionByCinema(request, place_id) :
+def getSessionsByCinema(request, place_id) :
     try:
         cinema = Cinema.objects.get(place_id=place_id)
     except Cinema.DoesNotExist:
@@ -133,19 +149,21 @@ def getSessionByCinema(request, place_id) :
     objs = Session.objects.filter(cinema=cinema.pk)
     return Response(SessionSerializer(objs, many=True).data) 
 
+
+
 #---------------------------------------------------------------------------------
 # Cinema Images
 #---------------------------------------------------------------------------------
 @api_view(['GET', 'POST'])
-def get_post_cinemaImage(request) :
+def getCinemaImagesList(request) :
     return general_get_post(request, CinemaImage, CinemaImageSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def get_update_delete_cinemaImage(request, pk) :
+def getCinemaImageItem(request, pk) :
     return general_get_put_delete(request, pk, CinemaImage, CinemaImageSerializer)
 
 @api_view(['GET'])
-def getImageByCinema(request, place_id) :
+def getImagesByCinema(request, place_id) :
     try:
         cinema = Cinema.objects.get(place_id=place_id)
     except Cinema.DoesNotExist:
@@ -157,21 +175,21 @@ def getImageByCinema(request, place_id) :
 # Actors
 #---------------------------------------------------------------------------------
 @api_view(['GET', 'POST'])
-def get_post_actor(request) :
+def getActorsList(request) :
     return general_get_post(request, Actor, ActorSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def get_update_delete_actor(request, pk) :
+def getActorItem(request, pk) :
     return general_get_put_delete(request, pk, Actor, ActorSerializer)
 
 #---------------------------------------------------------------------------------
 # Studios
 #---------------------------------------------------------------------------------
 @api_view(['GET', 'POST'])
-def get_post_studio(request) :
+def getStudiosList(request) :
     return general_get_post(request, Studio, StudioSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def get_update_delete_studio(request, pk) :
+def getStudioItem(request, pk) :
     return general_get_put_delete(request, pk, Studio, StudioSerializer)
 
