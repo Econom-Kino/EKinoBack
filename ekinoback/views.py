@@ -73,7 +73,7 @@ def getMoviesByCinema(request, place_id):
 # Cinemas
 #---------------------------------------------------------------------------------
 @api_view(['GET', 'POST'])
-def getCinemaList(request) :
+def getCinemasList(request) :
     return general_get_post(request, Cinema, CinemaSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -100,7 +100,7 @@ def getCinemaItem(request, place_id) :
 # Genres
 #---------------------------------------------------------------------------------
 @api_view(['GET', 'POST'])
-def getGenreList(request) :
+def getGenresList(request) :
     return general_get_post(request, Genre, GenreSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -127,7 +127,7 @@ def getGenreItem(request, pk) :
 # Sessions
 #---------------------------------------------------------------------------------
 @api_view(['GET', 'POST'])
-def getSessionList(request) :
+def getSessionsList(request) :
     return general_get_post(request, Session, SessionSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
