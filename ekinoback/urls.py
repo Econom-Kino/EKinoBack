@@ -3,7 +3,7 @@ from .views import *
 
 urlpatterns = [
     path('movies/', getMoviesList),
-    path('movies/place_id/<str:place_id>', getMoviesByCinema),
+    path('movies/place_id/<str:place_id>/', getMoviesByCinema),
     path('movies/id/<int:pk>/', getMovieItem),
     path('cinemas/', getCinemasList),
     path('cinemas/place_id/<str:place_id>/', getCinemaItem),

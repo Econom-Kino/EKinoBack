@@ -56,7 +56,7 @@ def getMovieItem(request, pk) :
 @api_view(['GET'])
 def getMoviesByCinema(request, place_id):
     try:
-        obj = Cinema.objects.get(place_id=key)
+        obj = Cinema.objects.get(place_id=place_id)
     except Cinema.DoesNotExist:
         return HttpResponse(status=status.HTTP_404_NOT_FOUND)
     
