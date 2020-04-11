@@ -3,7 +3,8 @@ import django_heroku
 import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(PROJECT_ROOT)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '=j7j-_3as2g8z$h=6)sg29i!&3-wt9nml_qg+%5gcg&0bca(_*'
@@ -15,7 +16,7 @@ SECRET_KEY = '=j7j-_3as2g8z$h=6)sg29i!&3-wt9nml_qg+%5gcg&0bca(_*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 CORS_ORIGIN_ALLOW_ALL = True
-# SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 ALLOWED_HOSTS = ['*']
@@ -49,7 +50,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 ]
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
 COMPRESS_ENABLED = os.environ.get('COMPRESS_ENABLED', False)
 
 ROOT_URLCONF = 'EKino.urls'
@@ -124,11 +125,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# #location where django collect all static files
-STATIC_ROOT = os.path.join(BASE_DIR,'static')
-# # location where you will store your static files
+# location where django collect all static files
+STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
+# location where you will store your static files
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'staticfiles'),
+    os.path.join(BASE_DIR, 'static'),
 ]
+
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 django_heroku.settings(locals())
