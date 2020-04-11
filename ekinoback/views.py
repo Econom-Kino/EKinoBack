@@ -64,10 +64,7 @@ def getMoviesByCinema(request, place_id):
     movies = set()
     for session in sessions:
         movies.add(session.movie)
-    objs = list()
-    for movie in movies:
-        objs.append(Movie.objects.get(pk=movie))
-    return Response(MovieSerializer(objs, many=True).data)
+    return Response(MovieSerializer(movies, many=True).data)
     
 #---------------------------------------------------------------------------------
 # Cinemas
