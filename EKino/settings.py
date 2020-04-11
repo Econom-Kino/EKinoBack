@@ -49,7 +49,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 ]
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 COMPRESS_ENABLED = os.environ.get('COMPRESS_ENABLED', False)
 
 ROOT_URLCONF = 'EKino.urls'
