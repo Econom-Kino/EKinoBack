@@ -58,7 +58,7 @@ def getMoviesByCinema(request, place_id):
     try:
         cinema = Cinema.objects.get(place_id=place_id)
     except Cinema.DoesNotExist:
-        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
     
     sessions = Session.objects.filter(cinema=cinema.pk)
     movies = set()
@@ -66,6 +66,7 @@ def getMoviesByCinema(request, place_id):
         movies.add(session.movie)
     return Response(MovieSerializer(movies, many=True).data)
     
+
 #---------------------------------------------------------------------------------
 # Cinemas
 #---------------------------------------------------------------------------------
@@ -93,6 +94,18 @@ def getCinemaItem(request, place_id) :
         obj.delete()
         return Response(status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+def getCinemasByMovie(request, pk) :
+    try:
+        movie = Movie.objects.get(pk=pk)
+    except Movie.DoesNotExist:
+        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+    
+    sessions = Session.objects.filter(movie=movie.pk)
+    cinemas = set()
+    for session in sessions:
+        cinemas.add(session.cinema)
+    return Response(CinemaSerializer(cinemas, many=True).data)
 #---------------------------------------------------------------------------------
 # Genres
 #---------------------------------------------------------------------------------
@@ -119,6 +132,7 @@ def getGenreItem(request, pk) :
     elif request.method == 'DELETE' :
         obj.delete()
         return Response(status=status.HTTP_200_OK)
+
 
 #---------------------------------------------------------------------------------
 # Sessions
@@ -147,7 +161,6 @@ def getSessionsByCinema(request, place_id) :
     return Response(SessionSerializer(objs, many=True).data) 
 
 
-
 #---------------------------------------------------------------------------------
 # Cinema Images
 #---------------------------------------------------------------------------------
@@ -168,6 +181,8 @@ def getImagesByCinema(request, place_id) :
 
     objs = CinemaImage.objects.filter(cinema=cinema.pk)
     return Response(CinemaImageSerializer(objs, many=True).data) 
+
+
 #---------------------------------------------------------------------------------
 # Actors
 #---------------------------------------------------------------------------------
@@ -178,6 +193,7 @@ def getActorsList(request) :
 @api_view(['GET', 'PUT', 'DELETE'])
 def getActorItem(request, pk) :
     return general_get_put_delete(request, pk, Actor, ActorSerializer)
+
 
 #---------------------------------------------------------------------------------
 # Studios

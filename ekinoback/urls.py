@@ -6,6 +6,7 @@ urlpatterns = [
     path('movies/place_id/<str:place_id>/', getMoviesByCinema),
     path('movies/id/<int:pk>/', getMovieItem),
     path('cinemas/', getCinemasList),
+    path('cinemas/movie_id/<int:pk>/', getCinemasByMovie),
     path('cinemas/place_id/<str:place_id>/', getCinemaItem),
     path('genres/', getGenresList),
     path('genres/id/<int:pk>/', getGenreItem), 

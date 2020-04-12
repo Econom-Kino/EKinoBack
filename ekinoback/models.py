@@ -42,6 +42,7 @@ class Movie(models.Model) :
     genre = models.ManyToManyField(Genre, verbose_name='Жанр',)
     age = models.BooleanField(verbose_name='Вікове обмеження',)
     rating = models.FloatField(db_index=True, verbose_name='Рейтинг',)
+    imdb_id = models.CharField(max_length=63, verbose_name='Номер в базі imdb', default='null')
     duration = models.IntegerField(verbose_name='Тривалість',)
     release_date = models.DateField(verbose_name="Дата прем'єри")
     actors = models.ManyToManyField(Actor, verbose_name='Актори', blank=True)
