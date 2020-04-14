@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import redirect
 from django.http import HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
+from datetime import datetime, timedelta
 from .serializers import CinemaSerializer, MovieSerializer, SessionSerializer, \
     GenreSerializer, CinemaImageSerializer, ActorSerializer, StudioSerializer
 from .models import Cinema, Movie, Session, Genre, CinemaImage, Actor, Studio
@@ -65,6 +66,11 @@ def getMoviesByCinema(request, place_id):
     for session in sessions:
         movies.add(session.movie)
     return Response(MovieSerializer(movies, many=True).data)
+
+@api_view(['GET'])
+def getAnnounces(request) :
+    announces = Movie.objects.filter(release_date__gt = datetime.now()).order_by('release_date')[:10]
+    return Response(MovieSerializer(announces, many=True).data)
     
 
 #---------------------------------------------------------------------------------
@@ -206,3 +212,9 @@ def getStudiosList(request) :
 def getStudioItem(request, pk) :
     return general_get_put_delete(request, pk, Studio, StudioSerializer)
 
+#---------------------------------------------------------------------------------
+# Miscellanious
+#---------------------------------------------------------------------------------
+@api_view(['GET']) 
+def mainPage(request) :
+    return redirect('/cinemas/')

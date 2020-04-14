@@ -16,7 +16,7 @@ SECRET_KEY = '=j7j-_3as2g8z$h=6)sg29i!&3-wt9nml_qg+%5gcg&0bca(_*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 CORS_ORIGIN_ALLOW_ALL = True
-SECRET_KEY = os.environ.get('SECRET_KEY')
+# SECRET_KEY = os.environ.get('SECRET_KEY')
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 ALLOWED_HOSTS = ['*']
