@@ -5,6 +5,8 @@ urlpatterns = [
     path('', mainPage),
     path('movies/', getMoviesList),
     path('movies/announces/', getAnnounces),
+    path('movies/getToday/', getTodayMovies),
+    path('movies/date/<int:year>/<int:day>/<int:month>/', getMoviesByDate),
     path('movies/place_id/<str:place_id>/', getMoviesByCinema),
     path('movies/id/<int:pk>/', getMovieItem),
     path('cinemas/', getCinemasList),

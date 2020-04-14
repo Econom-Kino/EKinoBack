@@ -41,7 +41,7 @@ class Movie(models.Model) :
     poster_link = models.URLField(verbose_name='Посилання на постер',)
     genre = models.ManyToManyField(Genre, verbose_name='Жанр',)
     age = models.BooleanField(verbose_name='Вікове обмеження',)
-    rating = models.FloatField(db_index=True, verbose_name='Рейтинг',)
+    rating = models.FloatField(db_index=True, verbose_name='Рейтинг', null=False)
     imdb_id = models.CharField(max_length=63, verbose_name='Номер в базі imdb', default='null')
     duration = models.IntegerField(verbose_name='Тривалість',)
     release_date = models.DateField(verbose_name="Дата прем'єри")

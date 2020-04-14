@@ -69,9 +69,21 @@ def getMoviesByCinema(request, place_id):
 
 @api_view(['GET'])
 def getAnnounces(request) :
-    announces = Movie.objects.filter(release_date__gt = datetime.now()).order_by('release_date')[:10]
+    announces = Movie.objects.filter(release_date__gt = datetime.now()).order_by('release_date')[:15]
     return Response(MovieSerializer(announces, many=True).data)
-    
+
+@api_view(['GET'])
+def getMoviesByDate(request, year, day, month) :
+    sessions = Session.objects.filter(start_time = datetime(year=year, day=day, month=month))
+    movies = set()
+    for session in sessions:
+        movies.add(session.movie)
+    return Response(MovieSerializer(movies, many=True).data)
+
+@api_view(['GET'])
+def getTodayMovies(request) :
+    today = datetime.today()
+    return getMoviesByDate(request._request, today.year, today.day, today.month)
 
 #---------------------------------------------------------------------------------
 # Cinemas
