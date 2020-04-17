@@ -4,6 +4,7 @@ from .views import *
 urlpatterns = [
     path('', mainPage),
     path('movies/', getMoviesList),
+    path('movies/search/', getMovieByName),
     path('movies/announces/', getAnnounces),
     path('movies/getToday/', getTodayMovies),
     path('movies/date/<int:year>/<int:day>/<int:month>/', getMoviesByDate),

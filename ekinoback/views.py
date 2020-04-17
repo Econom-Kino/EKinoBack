@@ -85,6 +85,16 @@ def getTodayMovies(request) :
     today = datetime.today()
     return getMoviesByDate(request._request, today.year, today.day, today.month)
 
+@api_view(['POST'])
+def getMovieByName(request) :
+    name = request.data['name']
+    objcts = Movie.objects.all()
+    result = []
+    for i in objcts:
+        if name in i.name :
+            result.append(i)
+    return Response(MovieSerializer(result, many=True).data)
+
 #---------------------------------------------------------------------------------
 # Cinemas
 #---------------------------------------------------------------------------------
