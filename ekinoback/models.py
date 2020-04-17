@@ -14,7 +14,7 @@ class Genre(models.Model) :
         ordering = ['name']
 
 class Actor(models.Model) :
-    name = models.CharField(max_length=50, db_index=True, verbose_name="Ім'я")
+    name = models.CharField(max_length=50, db_index=True, verbose_name="Ім'я", unique=True)
 
     def __str__(self) :
         return self.name
@@ -25,7 +25,7 @@ class Actor(models.Model) :
         ordering = ['name']
 
 class Studio(models.Model) :
-    name = models.CharField(max_length=50, verbose_name='назва')
+    name = models.CharField(max_length=50, verbose_name='назва', unique=True)
 
     def __str__(self):
         return self.name
