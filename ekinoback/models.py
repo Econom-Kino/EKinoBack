@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import RegexValidator
 
 class Genre(models.Model) :
-    name = models.CharField(max_length=20, db_index=True, verbose_name='Назва жанру', unique=True)
+    name = models.CharField(max_length=20, verbose_name='Назва жанру', unique=True)
     pseudo_id = models.IntegerField(verbose_name='номер жанру', db_index=True, default=0)
 
     def __str__(self):
@@ -14,7 +14,7 @@ class Genre(models.Model) :
         ordering = ['name']
 
 class Actor(models.Model) :
-    name = models.CharField(max_length=50, verbose_name="Ім'я")
+    name = models.CharField(max_length=50, db_index=True, verbose_name="Ім'я")
 
     def __str__(self) :
         return self.name
@@ -37,19 +37,19 @@ class Studio(models.Model) :
 
 class Movie(models.Model) :
     name = models.CharField(max_length=200, db_index=True, verbose_name='Назва', unique=True)  
-    trailer_link = models.URLField(verbose_name='Посилання на трейлер',)
-    poster_link = models.URLField(verbose_name='Посилання на постер',)
+    trailer_link = models.URLField(verbose_name='Посилання на трейлер', null=True)
+    poster_link = models.URLField(verbose_name='Посилання на постер', null=True)
     genre = models.ManyToManyField(Genre, verbose_name='Жанр',)
     age = models.BooleanField(verbose_name='Вікове обмеження',)
-    rating = models.FloatField(db_index=True, verbose_name='Рейтинг', null=False)
-    imdb_id = models.CharField(max_length=63, verbose_name='Номер в базі imdb', default='null')
+    rating = models.FloatField(db_index=True, verbose_name='Рейтинг', null=True)
+    imdb_id = models.CharField(max_length=63, verbose_name='Номер в базі imdb', default='null', null=True)
     duration = models.IntegerField(verbose_name='Тривалість',)
     release_date = models.DateField(verbose_name="Дата прем'єри")
     actors = models.ManyToManyField(Actor, verbose_name='Актори', blank=True)
-    country_production = models.CharField(max_length=200, verbose_name='Країна',)
+    country_production = models.CharField(max_length=200, verbose_name='Країна', null=True)
     director = models.CharField(max_length=200, verbose_name='Режисер',)
     studio = models.ManyToManyField(Studio, verbose_name='Студія', blank=True)
-    description = models.TextField(verbose_name='Опис',)
+    description = models.TextField(verbose_name='Опис', null=True)
 
     def __str__(self):
         return self.name

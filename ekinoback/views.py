@@ -229,4 +229,4 @@ def getStudioItem(request, pk) :
 #---------------------------------------------------------------------------------
 @api_view(['GET']) 
 def mainPage(request) :
-    return redirect('/cinemas/')
+    return redirect('/movies/getToday/')
