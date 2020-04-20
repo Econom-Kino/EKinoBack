@@ -1,9 +1,10 @@
 from django.shortcuts import redirect
 from django.http import HttpResponse
+from django.utils import timezone
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
-from datetime import datetime, timedelta
+from datetime import datetime
 from .serializers import CinemaSerializer, MovieSerializer, SessionSerializer, \
     GenreSerializer, CinemaImageSerializer, ActorSerializer, StudioSerializer
 from .models import Cinema, Movie, Session, Genre, CinemaImage, Actor, Studio
@@ -69,28 +70,30 @@ def getMoviesByCinema(request, place_id):
 
 @api_view(['GET'])
 def getAnnounces(request) :
-    announces = Movie.objects.filter(release_date__gt = datetime.now()).order_by('release_date')[:15]
+    announces = Movie.objects.filter(release_date__gt = timezone.now()).order_by('release_date')[:15]
     return Response(MovieSerializer(announces, many=True).data)
 
 @api_view(['GET'])
 def getMoviesByDate(request, year, day, month) :
-    sessions = Session.objects.filter(start_time = datetime(year=year, day=day, month=month))
+    sessions = Session.objects.filter(start_time__date = datetime(year=year, day=day, month=month))
     movies = set()
     for session in sessions:
         movies.add(session.movie)
+    movies = sorted(movies, key=lambda x: x.rating, reverse=True)
     return Response(MovieSerializer(movies, many=True).data)
 
 @api_view(['GET'])
 def getTodayMovies(request) :
-    today = datetime.today()
+    today = timezone.localtime(timezone.now())
+    print(today)
     return getMoviesByDate(request._request, today.year, today.day, today.month)
 
 @api_view(['POST'])
 def getMovieByName(request) :
     name = request.data['name']
-    objcts = Movie.objects.all()
+    objs = Movie.objects.all().order_by('-rating')
     result = []
-    for i in objcts:
+    for i in objs:
         if name in i.name :
             result.append(i)
     return Response(MovieSerializer(result, many=True).data)
