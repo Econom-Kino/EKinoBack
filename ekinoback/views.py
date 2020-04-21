@@ -70,8 +70,13 @@ def getMoviesByCinema(request, place_id):
 
 @api_view(['GET'])
 def getAnnounces(request) :
-    announces = Movie.objects.filter(release_date__gt = timezone.now()).order_by('release_date')[:15]
+    announces = Movie.objects.filter(release_date__gt = timezone.localtime(timezone.now())).order_by('release_date')[:15]
     return Response(MovieSerializer(announces, many=True).data)
+
+@api_view(['GET'])
+def inRolling(request) :
+    movies = Movie.objects.filter(release_date__lt = timezone.localtime(timezone.now())).order_by('release_date')[:15]
+    return Response(MovieSerializer(movies, many=True).data)
 
 @api_view(['GET'])
 def getMoviesByDate(request, year, day, month) :
