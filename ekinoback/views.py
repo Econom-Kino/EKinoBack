@@ -10,12 +10,6 @@ from .serializers import CinemaSerializer, MovieSerializer, SessionSerializer, \
 from .models import Cinema, Movie, Session, Genre, CinemaImage, Actor, Studio
 
 #---------------------------------------------------------------------------------
-# To Do List
-#---------------------------------------------------------------------------------
-
-#Fix later, unable to sort nulls (line 93)
-
-#---------------------------------------------------------------------------------
 # General
 #---------------------------------------------------------------------------------
 
@@ -69,9 +63,7 @@ def getMoviesByCinema(request, place_id):
         return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
     
     sessions = Session.objects.filter(cinema=cinema.pk)
-    movies = set()
-    for session in sessions:
-        movies.add(session.movie)
+    movies = set([session.movie for session in sessions])
     return Response(MovieSerializer(movies, many=True).data)
 
 @api_view(['GET'])
@@ -87,26 +79,20 @@ def inRolling(request) :
 @api_view(['GET'])
 def getMoviesByDate(request, year, day, month) :
     sessions = Session.objects.filter(start_time__date = datetime(year=year, day=day, month=month))
-    movies = set()
-    for session in sessions:
-        movies.add(session.movie)
+    movies = set([session.movie for session in sessions])
     movies = sorted(movies, key=lambda x: x.rating or 0, reverse=True)
     return Response(MovieSerializer(movies, many=True).data)
 
 @api_view(['GET'])
 def getTodayMovies(request) :
     today = timezone.localtime(timezone.now())
-    print(today)
     return getMoviesByDate(request._request, today.year, today.day, today.month)
 
 @api_view(['POST'])
 def getMovieByName(request) :
     name = request.data['name']
     objs = Movie.objects.all().order_by('-rating')
-    result = []
-    for i in objs:
-        if name in i.name :
-            result.append(i)
+    result = [obj for obj in objs if name in obj.name]
     return Response(MovieSerializer(result, many=True).data)
 
 #---------------------------------------------------------------------------------
@@ -144,9 +130,7 @@ def getCinemasByMovie(request, pk) :
         return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
     
     sessions = Session.objects.filter(movie=movie.pk)
-    cinemas = set()
-    for session in sessions:
-        cinemas.add(session.cinema)
+    cinemas = set([session.cinema for session in sessions])
     return Response(CinemaSerializer(cinemas, many=True).data)
 #---------------------------------------------------------------------------------
 # Genres
@@ -247,10 +231,3 @@ def getStudiosList(request) :
 @api_view(['GET', 'PUT', 'DELETE'])
 def getStudioItem(request, pk) :
     return general_get_put_delete(request, pk, Studio, StudioSerializer)
-
-#---------------------------------------------------------------------------------
-# Miscellanious
-#---------------------------------------------------------------------------------
-@api_view(['GET']) 
-def mainPage(request) :
-    return redirect('/movies/getToday/')

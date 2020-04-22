@@ -14,7 +14,7 @@ SECRET_KEY = '=j7j-_3as2g8z$h=6)sg29i!&3-wt9nml_qg+%5gcg&0bca(_*'
 # SESSION_COOKIE_SECURE = True
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 CORS_ORIGIN_ALLOW_ALL = True
 # SECRET_KEY = os.environ.get('SECRET_KEY')
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_yasg',
     'corsheaders',
     'ekinoback',
 ]
@@ -49,7 +50,6 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
 ]
-
 
 COMPRESS_ENABLED = os.environ.get('COMPRESS_ENABLED', False)
 
@@ -127,7 +127,7 @@ STATIC_URL = '/static/'
 
 # location where django collect all static files
 STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
-# location where you will store your static files
+# location where you will store static files
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
