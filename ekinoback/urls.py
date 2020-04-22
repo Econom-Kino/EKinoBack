@@ -3,10 +3,11 @@ from .views import *
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+# Swagger docs view setup
 schema_view = get_schema_view(
    openapi.Info(
       title="EKino API",
-      default_version='v1234',
+      default_version='v1.56',
       description="Lviv cinema aggregator"
    ),
    public=True
