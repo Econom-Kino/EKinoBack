@@ -10,6 +10,12 @@ from .serializers import CinemaSerializer, MovieSerializer, SessionSerializer, \
 from .models import Cinema, Movie, Session, Genre, CinemaImage, Actor, Studio
 
 #---------------------------------------------------------------------------------
+# To Do List
+#---------------------------------------------------------------------------------
+
+#Fix later, unable to sort nulls (line 93)
+
+#---------------------------------------------------------------------------------
 # General
 #---------------------------------------------------------------------------------
 
@@ -84,7 +90,7 @@ def getMoviesByDate(request, year, day, month) :
     movies = set()
     for session in sessions:
         movies.add(session.movie)
-    movies = sorted(movies, key=lambda x: x.rating, reverse=True)
+    # movies = sorted(movies, key=lambda x: x.rating, reverse=True)
     return Response(MovieSerializer(movies, many=True).data)
 
 @api_view(['GET'])
