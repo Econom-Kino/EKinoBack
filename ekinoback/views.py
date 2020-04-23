@@ -49,6 +49,11 @@ def general_get_put_delete(request, attr, class_name, serializer_name) :
 #---------------------------------------------------------------------------------
 @api_view(['GET', 'POST'])
 def getMoviesList(request) :
+    """
+    Get/Post MovieList/Movie
+
+    URL for getting of Movies list / posting a new Movie
+    """
     return general_get_post(request, Movie, MovieSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
