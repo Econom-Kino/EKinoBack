@@ -124,14 +124,18 @@ def getCinemaItem(request, place_id) :
 
 @api_view(['GET'])
 def getCinemasByMovie(request, pk) :
-    try:
-        movie = Movie.objects.get(pk=pk)
-    except Movie.DoesNotExist:
-        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
-    
-    sessions = Session.objects.filter(movie=movie.pk)
+    sessions = Session.objects.filter(movie=pk)
     cinemas = set([session.cinema for session in sessions])
     return Response(CinemaSerializer(cinemas, many=True).data)
+
+@api_view(['GET'])
+def getSessionsByBoth(request, place_id, pk) :
+    try:
+        cinema = Cinema.objects.get(place_id=place_id)
+    except Cinema.DoesNotExist:
+        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+    sessions = Session.objects.filter(cinema=cinema.id, movie=pk)
+    return Response(SessionSerializer(sessions, many=True).data)
 #---------------------------------------------------------------------------------
 # Genres
 #---------------------------------------------------------------------------------

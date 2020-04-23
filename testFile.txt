@@ -1,0 +1,2 @@
+/movies/<int:id>/cinemas/<str:place_id>/sessions
+/cinemas/<str:place_id>/movies/<int:str>/sessions

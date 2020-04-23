@@ -17,40 +17,41 @@ urlpatterns = [
     path('', schema_view.with_ui('swagger', cache_timeout=0)),
 
     # Movies urls
-    path('movies/', getMoviesList),
-    path('movies/search/', getMovieByName),
-    path('movies/announces/', getAnnounces),
-    path('movies/inRolling/', inRolling),
-    path('movies/getToday/', getTodayMovies),
-    path('movies/date/<int:year>/<int:day>/<int:month>/', getMoviesByDate),
-    path('movies/place_id/<str:place_id>/', getMoviesByCinema),
-    path('movies/id/<int:pk>/', getMovieItem),
+    path('movies', getMoviesList),
+    path('movies/search', getMovieByName),
+    path('movies/announces', getAnnounces),
+    path('movies/in-rolling', inRolling),
+    path('movies/today', getTodayMovies),
+    path('movies/date/<int:year>/<int:day>/<int:month>', getMoviesByDate),
+    path('movies/<int:pk>', getMovieItem),
+    path('movies/<int:pk>/cinemas', getCinemasByMovie),
+    path('movies/<int:pk>/sessions', getSessionsByMovie),
 
     # Cinemas urls
-    path('cinemas/', getCinemasList),
-    path('cinemas/movie_id/<int:pk>/', getCinemasByMovie),
-    path('cinemas/place_id/<str:place_id>/', getCinemaItem),
+    path('cinemas', getCinemasList),
+    path('cinemas/<str:place_id>/movies', getMoviesByCinema),
+    path('cinemas/<str:place_id>', getCinemaItem),
+    path('cinemas/<str:place_id>/cinema-images', getImagesByCinema),
+    path('cinemas/<str:place_id>/sessions', getSessionsByCinema),
+    path('cinemas/<str:place_id>/movies/<int:pk>/sessions', getSessionsByBoth), 
 
     # Genres urls
-    path('genres/', getGenresList),
-    path('genres/id/<int:pk>/', getGenreItem), 
+    path('genres', getGenresList),
+    path('genres/<int:pk>', getGenreItem), 
 
     # Sessions urls
-    path('sessions/', getSessionsList),
-    path('sessions/movie/<int:pk>/', getSessionsByMovie),
-    path('sessions/cinema/<str:place_id>/', getSessionsByCinema),    
-    path('sessions/id/<int:pk>/', getSessionItem),
+    path('sessions', getSessionsList),   
+    path('sessions/<int:pk>', getSessionItem),
 
     # Cinema images urls
-    path('cinema-images/', getCinemaImagesList),
-    path('cinema-images/cinema/<str:place_id>/', getImagesByCinema),
-    path('cinema-images/id/<int:pk>/', getCinemaImageItem),
+    path('cinema-images', getCinemaImagesList),
+    path('cinema-images/<int:pk>', getCinemaImageItem),
 
     # Actors urls
-    path('actors/', getActorsList),
-    path('actors/id/<int:pk>/', getActorItem),
+    path('actors', getActorsList),
+    path('actors/<int:pk>', getActorItem),
 
     # Studios urls
-    path('studios/', getStudiosList),
-    path('studios/id/<int:pk>/', getStudioItem),
+    path('studios', getStudiosList),
+    path('studios/<int:pk>', getStudioItem),
 ]
