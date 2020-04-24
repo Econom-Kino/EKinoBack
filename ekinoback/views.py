@@ -182,7 +182,7 @@ def getSessionItem(request, pk) :
 
 @api_view(['GET'])
 def getSessionsByMovie(request, pk) :
-    objs = Session.objects.filter(movie=pk)
+    objs = Session.objects.filter(movie=pk).order_by('price')
     return Response(SessionSerializer(objs, many=True).data) 
 
 @api_view(['GET'])
@@ -194,6 +194,13 @@ def getSessionsByCinema(request, place_id) :
 
     objs = Session.objects.filter(cinema=cinema.pk)
     return Response(SessionSerializer(objs, many=True).data) 
+
+@api_view(['GET'])
+def getSessionsByMovieAndDate(request, pk, year, day, month) :
+    if (day in range(1,32) and month in range(1,13)) :
+        objs = Session.objects.filter(movie=pk, start_time__date=datetime(year=year, day=day, month=month)).order_by('price')
+        return Response(SessionSerializer(objs, many=True).data)
+    return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
 
 #---------------------------------------------------------------------------------

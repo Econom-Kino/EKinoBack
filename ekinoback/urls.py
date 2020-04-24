@@ -26,6 +26,7 @@ urlpatterns = [
     path('movies/<int:pk>', getMovieItem),
     path('movies/<int:pk>/cinemas', getCinemasByMovie),
     path('movies/<int:pk>/sessions', getSessionsByMovie),
+    path('movies/<int:pk>/date/<int:year>/<int:day>/<int:month>/sessions', getSessionsByMovieAndDate),
 
     # Cinemas urls
     path('cinemas', getCinemasList),
