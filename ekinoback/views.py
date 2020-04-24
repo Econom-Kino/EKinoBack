@@ -1,13 +1,11 @@
-from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.utils import timezone
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
 from datetime import datetime
-from .serializers import CinemaSerializer, MovieSerializer, SessionSerializer, \
-    GenreSerializer, CinemaImageSerializer, ActorSerializer, StudioSerializer
-from .models import Cinema, Movie, Session, Genre, CinemaImage, Actor, Studio
+from .serializers import *
+from .models import *
 
 #---------------------------------------------------------------------------------
 # General
@@ -19,7 +17,7 @@ def general_get_post(request, class_name, serializer_name):
         serializer = serializer_name(obj, many=True)
         return Response(serializer.data)
     elif request.method == 'POST' :
-        serializer = serializer_name(data=request.data)
+        serializer = serializer_name(data=request.data, many=False)
         if serializer.is_valid() :
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -50,65 +48,40 @@ def general_get_put_delete(request, attr, class_name, serializer_name) :
 @api_view(['GET', 'POST'])
 def getMoviesList(request) :
     """
-    Get/Post MovieList/Movie
+    Get/Post MovieList
 
-    URL for getting of Movies list / posting a new Movie
+    URL for getting/posting of Movies list
     """
     return general_get_post(request, Movie, MovieSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def getMovieItem(request, pk) :
+    """
+    Get/Put/Delete Movie instance
+
+    URL for getting/putting/deleting of Movie instance
+    """
     return general_get_put_delete(request, pk, Movie, MovieSerializer)
-
-@api_view(['GET'])
-def getMoviesByCinema(request, place_id):
-    try:
-        cinema = Cinema.objects.get(place_id=place_id)
-    except Cinema.DoesNotExist:
-        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
-    
-    sessions = Session.objects.filter(cinema=cinema.pk)
-    movies = set([session.movie for session in sessions])
-    return Response(MovieSerializer(movies, many=True).data)
-
-@api_view(['GET'])
-def getAnnounces(request) :
-    announces = Movie.objects.filter(release_date__gt = timezone.localtime(timezone.now())).order_by('release_date')[:15]
-    return Response(MovieSerializer(announces, many=True).data)
-
-@api_view(['GET'])
-def inRolling(request) :
-    movies = Movie.objects.filter(release_date__lt = timezone.localtime(timezone.now())).order_by('release_date')[:15]
-    return Response(MovieSerializer(movies, many=True).data)
-
-@api_view(['GET'])
-def getMoviesByDate(request, year, day, month) :
-    sessions = Session.objects.filter(start_time__date = datetime(year=year, day=day, month=month))
-    movies = set([session.movie for session in sessions])
-    movies = sorted(movies, key=lambda x: x.rating or 0, reverse=True)
-    return Response(MovieSerializer(movies, many=True).data)
-
-@api_view(['GET'])
-def getTodayMovies(request) :
-    today = timezone.localtime(timezone.now())
-    return getMoviesByDate(request._request, today.year, today.day, today.month)
-
-@api_view(['POST'])
-def getMovieByName(request) :
-    name = request.data['name']
-    objs = Movie.objects.all().order_by('-rating')
-    result = [obj for obj in objs if name in obj.name]
-    return Response(MovieSerializer(result, many=True).data)
 
 #---------------------------------------------------------------------------------
 # Cinemas
 #---------------------------------------------------------------------------------
 @api_view(['GET', 'POST'])
 def getCinemasList(request) :
+    """
+    Get/Post CinemaList
+
+    URL for getting/posting of Cinemas list
+    """
     return general_get_post(request, Cinema, CinemaSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def getCinemaItem(request, place_id) :
+    """
+    Get/Put/Delete Cinema instance
+
+    URL for getting/putting/deleting of Cinema instance
+    """
     try:
         obj = Cinema.objects.get(place_id=place_id)
     except Cinema.DoesNotExist:
@@ -127,29 +100,25 @@ def getCinemaItem(request, place_id) :
         obj.delete()
         return Response(status=status.HTTP_200_OK)
 
-@api_view(['GET'])
-def getCinemasByMovie(request, pk) :
-    sessions = Session.objects.filter(movie=pk)
-    cinemas = set([session.cinema for session in sessions])
-    return Response(CinemaSerializer(cinemas, many=True).data)
-
-@api_view(['GET'])
-def getSessionsByBoth(request, place_id, pk) :
-    try:
-        cinema = Cinema.objects.get(place_id=place_id)
-    except Cinema.DoesNotExist:
-        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
-    sessions = Session.objects.filter(cinema=cinema.id, movie=pk)
-    return Response(SessionSerializer(sessions, many=True).data)
 #---------------------------------------------------------------------------------
 # Genres
 #---------------------------------------------------------------------------------
 @api_view(['GET', 'POST'])
 def getGenresList(request) :
+    """
+    Get/Post GenreList
+
+    URL for getting/posting of Genres list
+    """
     return general_get_post(request, Genre, GenreSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def getGenreItem(request, pk) :
+    """
+    Get/Put/Delete Genre instance
+
+    URL for getting/putting/deleting of Genre instance
+    """
     try:
         obj = Genre.objects.get(pseudo_id=pk)
     except Genre.DoesNotExist:
@@ -174,66 +143,62 @@ def getGenreItem(request, pk) :
 #---------------------------------------------------------------------------------
 @api_view(['GET', 'POST'])
 def getSessionsList(request) :
+    """
+    Get/Post SessionList
+
+    URL for getting/posting of Sessions list
+    """
     return general_get_post(request, Session, SessionSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def getSessionItem(request, pk) :
+    """
+    Get/Put/Delete Session instance
+
+    URL for getting/putting/deleting of Session instance
+    """
     return general_get_put_delete(request, pk, Session, SessionSerializer)
-
-@api_view(['GET'])
-def getSessionsByMovie(request, pk) :
-    objs = Session.objects.filter(movie=pk).order_by('price')
-    return Response(SessionSerializer(objs, many=True).data) 
-
-@api_view(['GET'])
-def getSessionsByCinema(request, place_id) :
-    try:
-        cinema = Cinema.objects.get(place_id=place_id)
-    except Cinema.DoesNotExist:
-        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
-
-    objs = Session.objects.filter(cinema=cinema.pk)
-    return Response(SessionSerializer(objs, many=True).data) 
-
-@api_view(['GET'])
-def getSessionsByMovieAndDate(request, pk, year, day, month) :
-    if (day in range(1,32) and month in range(1,13)) :
-        objs = Session.objects.filter(movie=pk, start_time__date=datetime(year=year, day=day, month=month)).order_by('price')
-        return Response(SessionSerializer(objs, many=True).data)
-    return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
-
 
 #---------------------------------------------------------------------------------
 # Cinema Images
 #---------------------------------------------------------------------------------
 @api_view(['GET', 'POST'])
 def getCinemaImagesList(request) :
+    """
+    Get/Post CinemaImageList
+
+    URL for getting/posting of Cinema Images list
+    """
     return general_get_post(request, CinemaImage, CinemaImageSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def getCinemaImageItem(request, pk) :
+    """
+    Get/Put/Delete CinemaImage instance
+
+    URL for getting/putting/deleting of CinemaImage instance
+    """
     return general_get_put_delete(request, pk, CinemaImage, CinemaImageSerializer)
-
-@api_view(['GET'])
-def getImagesByCinema(request, place_id) :
-    try:
-        cinema = Cinema.objects.get(place_id=place_id)
-    except Cinema.DoesNotExist:
-        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
-
-    objs = CinemaImage.objects.filter(cinema=cinema.pk)
-    return Response(CinemaImageSerializer(objs, many=True).data) 
-
 
 #---------------------------------------------------------------------------------
 # Actors
 #---------------------------------------------------------------------------------
 @api_view(['GET', 'POST'])
 def getActorsList(request) :
+    """
+    Get/Post ActorList
+
+    URL for getting/posting of Actors list
+    """
     return general_get_post(request, Actor, ActorSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def getActorItem(request, pk) :
+    """
+    Get/Put/Delete Actor instance
+
+    URL for getting/putting/deleting of Actor instance
+    """
     return general_get_put_delete(request, pk, Actor, ActorSerializer)
 
 
@@ -242,8 +207,18 @@ def getActorItem(request, pk) :
 #---------------------------------------------------------------------------------
 @api_view(['GET', 'POST'])
 def getStudiosList(request) :
+    """
+    Get/Post StudioList
+
+    URL for getting/posting of Studios list
+    """
     return general_get_post(request, Studio, StudioSerializer)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def getStudioItem(request, pk) :
+    """
+    Get/Put/Delete Studio instance
+
+    URL for getting/putting/deleting of Studio instance
+    """
     return general_get_put_delete(request, pk, Studio, StudioSerializer)
