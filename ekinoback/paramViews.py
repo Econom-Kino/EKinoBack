@@ -178,5 +178,5 @@ def clearUselessSessions(request) :
 def clearUselessMovies(request) :
     sessions = Session.objects.all()
     useful = list(set([session.movie for session in sessions]))
-    Movie.objects.all().exclude(id__in=[movie.id for movie in useful]).delete()
+    Movie.objects.all(release_date__lt = timezone.localtime(timezone.now())).exclude(id__in=[movie.id for movie in useful]).delete()
     return HttpResponse(status.HTTP_202_ACCEPTED)

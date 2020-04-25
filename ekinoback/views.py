@@ -17,7 +17,7 @@ def general_get_post(request, class_name, serializer_name):
         serializer = serializer_name(obj, many=True)
         return Response(serializer.data)
     elif request.method == 'POST' :
-        serializer = serializer_name(data=request.data, many=False)
+        serializer = serializer_name(data=request.data, many=True)
         if serializer.is_valid() :
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
