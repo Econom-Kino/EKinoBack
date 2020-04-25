@@ -165,3 +165,18 @@ def getImagesByCinema(request, place_id) :
 
     objs = CinemaImage.objects.filter(cinema=cinema.pk)
     return Response(CinemaImageSerializer(objs, many=True).data) 
+
+#---------------------------------------------------------------------------------
+# Special
+#---------------------------------------------------------------------------------
+@api_view(['GET'])
+def clearUselessSessions(request) :
+    Session.objects.filter(start_time__lt=timezone.localtime(timezone.now())).delete()
+    return HttpResponse(status.HTTP_202_ACCEPTED)
+
+@api_view(['GET'])
+def clearUselessMovies(request) :
+    sessions = Session.objects.all()
+    useful = list(set([session.movie for session in sessions]))
+    Movie.objects.all().exclude(id__in=[movie.id for movie in useful]).delete()
+    return HttpResponse(status.HTTP_202_ACCEPTED)

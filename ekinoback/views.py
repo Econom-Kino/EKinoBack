@@ -13,7 +13,7 @@ from .models import *
 
 def general_get_post(request, class_name, serializer_name):
     if request.method == 'GET' :
-        obj = class_name.objects.all()
+        obj = class_name.objects.all()[:30]
         serializer = serializer_name(obj, many=True)
         return Response(serializer.data)
     elif request.method == 'POST' :

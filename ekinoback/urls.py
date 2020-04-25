@@ -8,7 +8,7 @@ from drf_yasg import openapi
 schema_view = get_schema_view(
    openapi.Info(
       title="EKino API",
-      default_version='v1.56',
+      default_version='v1.64',
       description="Lviv cinema aggregator"
    ),
    public=True
@@ -56,4 +56,8 @@ urlpatterns = [
     # Studios urls
     path('studios', getStudiosList),
     path('studios/<int:pk>', getStudioItem),
+
+    #Special urls
+    path('clear/sessions', clearUselessSessions),
+    path('clear/movies', clearUselessMovies),
 ]
