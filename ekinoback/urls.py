@@ -8,7 +8,7 @@ from drf_yasg import openapi
 schema_view = get_schema_view(
    openapi.Info(
       title="EKino API",
-      default_version='v1.64',
+      default_version='v1.67',
       description="Lviv cinema aggregator"
    ),
    public=True
