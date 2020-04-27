@@ -8,6 +8,12 @@ from .serializers import *
 from .models import *
 
 #---------------------------------------------------------------------------------
+# Utilities
+#---------------------------------------------------------------------------------
+def getNow() :
+    return timezone.localtime(timezone.now())
+
+#---------------------------------------------------------------------------------
 # Movies
 #---------------------------------------------------------------------------------
 @api_view(['GET'])
@@ -24,7 +30,7 @@ def getMoviesByCinema(request, place_id):
     
     sessions = Session.objects.filter(cinema=cinema.pk)
     movies = set([session.movie for session in sessions])
-    return Response(MovieSerializer(movies, many=True).data)
+    return Response(MovieSerializer(movies[:16], many=True).data)
 
 @api_view(['GET'])
 def getAnnounces(request) :
@@ -33,7 +39,7 @@ def getAnnounces(request) :
 
     URL for getting of Movies, that are still not released
     """
-    announces = Movie.objects.filter(release_date__gt = timezone.localtime(timezone.now())).order_by('release_date')[:15]
+    announces = Movie.objects.filter(release_date__gt = getNow()).order_by('release_date')[:15]
     return Response(MovieSerializer(announces, many=True).data)
 
 @api_view(['GET'])
@@ -43,7 +49,7 @@ def inRolling(request) :
 
     URL for getting of Movies, that are released
     """
-    movies = Movie.objects.filter(release_date__lt = timezone.localtime(timezone.now())).order_by('release_date')[:15]
+    movies = Movie.objects.filter(release_date__lt = getNow()).order_by('release_date')[:16]
     return Response(MovieSerializer(movies, many=True).data)
 
 @api_view(['GET'])
@@ -56,7 +62,7 @@ def getMoviesByDate(request, year, day, month) :
     sessions = Session.objects.filter(start_time__date = datetime(year=year, day=day, month=month))
     movies = set([session.movie for session in sessions])
     movies = sorted(movies, key=lambda x: x.rating or 0, reverse=True)
-    return Response(MovieSerializer(movies, many=True).data)
+    return Response(MovieSerializer(movies[:16], many=True).data)
 
 @api_view(['GET'])
 def getTodayMovies(request) :
@@ -65,7 +71,7 @@ def getTodayMovies(request) :
 
     Redirects to GetMoviesByDate with today parameters
     """
-    today = timezone.localtime(timezone.now())
+    today = getNow()
     return getMoviesByDate(request._request, today.year, today.day, today.month)
 
 @api_view(['POST'])
@@ -104,7 +110,7 @@ def getSessionsByMovie(request, pk) :
 
     URL for getting of Sessions of specified Movie
     """
-    objs = Session.objects.filter(movie=pk).order_by('price')
+    objs = Session.objects.filter(movie=pk, start_time__lt=getNow()).order_by('price') [:30]
     return Response(SessionSerializer(objs, many=True).data) 
 
 @api_view(['GET'])
@@ -118,8 +124,7 @@ def getSessionsByCinema(request, place_id) :
         cinema = Cinema.objects.get(place_id=place_id)
     except Cinema.DoesNotExist:
         return HttpResponse(status=status.HTTP_404_NOT_FOUND)
-
-    objs = Session.objects.filter(cinema=cinema.pk)
+    objs = Session.objects.filter(cinema=cinema.pk, start_time__lt=getNow()) [:30]
     return Response(SessionSerializer(objs, many=True).data) 
 
 @api_view(['GET'])
@@ -130,7 +135,8 @@ def getSessionsByMovieAndDate(request, pk, year, day, month) :
     URL for getting of Sessions of specified Movie and at specified Date at the same time
     """
     if (day in range(1,32) and month in range(1,13)) :
-        objs = Session.objects.filter(movie=pk, start_time__date=datetime(year=year, day=day, month=month)).order_by('price')
+        objs = Session.objects.filter(movie=pk, start_time__date=datetime(year=year, day=day, month=month))\
+            .filter(start_time__lt=getNow()).order_by('price')
         return Response(SessionSerializer(objs, many=True).data)
     return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
@@ -144,8 +150,9 @@ def getSessionsByBoth(request, place_id, pk) :
     try:
         cinema = Cinema.objects.get(place_id=place_id)
     except Cinema.DoesNotExist:
-        return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
-    sessions = Session.objects.filter(cinema=cinema.id, movie=pk)
+        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+
+    sessions = Session.objects.filter(cinema=cinema.id, movie=pk, start_time__lt=getNow())[:30]
     return Response(SessionSerializer(sessions, many=True).data)
 
 #---------------------------------------------------------------------------------
@@ -171,12 +178,22 @@ def getImagesByCinema(request, place_id) :
 #---------------------------------------------------------------------------------
 @api_view(['GET'])
 def clearUselessSessions(request) :
-    Session.objects.filter(start_time__lt=timezone.localtime(timezone.now())).delete()
+    """
+    Delete Useless Sessions
+
+    URL for deletion of sessions, that are older than now !!!FOR ADMIN USE ONLY!!!
+    """
+    Session.objects.filter(start_time__lt=getNow()).delete()
     return HttpResponse(status.HTTP_202_ACCEPTED)
 
 @api_view(['GET'])
 def clearUselessMovies(request) :
+    """
+    Delete Useless Movies
+
+    URL for deletion of movies, that are already released and have no sessions !!!FOR ADMIN USE ONLY!!!
+    """
     sessions = Session.objects.all()
     useful = list(set([session.movie for session in sessions]))
-    Movie.objects.all(release_date__lt = timezone.localtime(timezone.now())).exclude(id__in=[movie.id for movie in useful]).delete()
+    Movie.objects.all(release_date__lt = getNow()).exclude(id__in=[movie.id for movie in useful]).delete()
     return HttpResponse(status.HTTP_202_ACCEPTED)
