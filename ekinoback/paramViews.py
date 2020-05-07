@@ -110,7 +110,7 @@ def getSessionsByMovie(request, pk) :
 
     URL for getting of Sessions of specified Movie
     """
-    objs = Session.objects.filter(movie=pk, start_time__gt=getNow()).order_by('price') [:30]
+    objs = Session.objects.filter(movie=pk, start_time__gt=getNow()).order_by('price')[:30]
     return Response(SessionSerializer(objs, many=True).data) 
 
 @api_view(['GET'])
@@ -124,7 +124,7 @@ def getSessionsByCinema(request, place_id) :
         cinema = Cinema.objects.get(place_id=place_id)
     except Cinema.DoesNotExist:
         return HttpResponse(status=status.HTTP_404_NOT_FOUND)
-    objs = Session.objects.filter(cinema=cinema.pk, start_time__gt=getNow()) [:30]
+    objs = Session.objects.filter(cinema=cinema.pk, start_time__gt=getNow())[:30]
     return Response(SessionSerializer(objs, many=True).data) 
 
 @api_view(['GET'])
@@ -136,7 +136,7 @@ def getSessionsByMovieAndDate(request, pk, year, day, month) :
     """
     if (day in range(1,32) and month in range(1,13)) :
         objs = Session.objects.filter(movie=pk, start_time__date=datetime(year=year, day=day, month=month))\
-            .filter(start_time__lt=getNow()).order_by('price')
+            .filter(start_time__gt=getNow()).order_by('price')
         return Response(SessionSerializer(objs, many=True).data)
     return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
