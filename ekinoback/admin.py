@@ -11,7 +11,7 @@ class MovieAdmin(admin.ModelAdmin):
 class SessionAdmin(admin.ModelAdmin):
     list_display = ('cinema', 'movie', 'price', 'start_time', 'language', 'technology')
     list_display_links = ('cinema', 'movie')
-    search_fields = ('cinema', 'movie',)
+    search_fields = ('cinema__name', 'movie__name',)
 
 
 class GenreAdmin(admin.ModelAdmin):
