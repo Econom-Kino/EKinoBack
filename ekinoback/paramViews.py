@@ -101,7 +101,7 @@ def getCinemasByMovie(request, pk) :
     return Response(CinemaSerializer(cinemas, many=True).data)
 
 #---------------------------------------------------------------------------------
-# Genres
+# Sessions
 #---------------------------------------------------------------------------------
 @api_view(['GET'])
 def getSessionsByMovie(request, pk) :
@@ -110,7 +110,7 @@ def getSessionsByMovie(request, pk) :
 
     URL for getting of Sessions of specified Movie
     """
-    objs = Session.objects.filter(movie=pk, start_time__lt=getNow()).order_by('price') [:30]
+    objs = Session.objects.filter(movie=pk, start_time__gt=getNow()).order_by('price') [:30]
     return Response(SessionSerializer(objs, many=True).data) 
 
 @api_view(['GET'])
@@ -124,7 +124,7 @@ def getSessionsByCinema(request, place_id) :
         cinema = Cinema.objects.get(place_id=place_id)
     except Cinema.DoesNotExist:
         return HttpResponse(status=status.HTTP_404_NOT_FOUND)
-    objs = Session.objects.filter(cinema=cinema.pk, start_time__lt=getNow()) [:30]
+    objs = Session.objects.filter(cinema=cinema.pk, start_time__gt=getNow()) [:30]
     return Response(SessionSerializer(objs, many=True).data) 
 
 @api_view(['GET'])
@@ -152,7 +152,7 @@ def getSessionsByBoth(request, place_id, pk) :
     except Cinema.DoesNotExist:
         return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
-    sessions = Session.objects.filter(cinema=cinema.id, movie=pk, start_time__lt=getNow())[:30]
+    sessions = Session.objects.filter(cinema=cinema.id, movie=pk, start_time__gt=getNow())[:30]
     return Response(SessionSerializer(sessions, many=True).data)
 
 #---------------------------------------------------------------------------------
