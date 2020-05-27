@@ -81,10 +81,8 @@ def getMovieByName(request) :
 
     URL for getting of Movies, that have specified string in its 'name' field
     """
-    name = request.data['name']
-    objs = Movie.objects.all().order_by('-rating')
-    result = [obj for obj in objs if name in obj.name]
-    return Response(MovieSerializer(result, many=True).data)
+    objs = Movie.objects.filter(name__icontains=request.data['name']).order_by('-rating')
+    return Response(MovieSerializer(objs, many=True).data)
 
 #---------------------------------------------------------------------------------
 # Cinemas
